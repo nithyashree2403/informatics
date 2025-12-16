@@ -1,0 +1,75 @@
+{%extends "base.html" %}
+
+{% block title %}TODO app{% endblock %}
+
+{% block content %}
+<h2>Active Tasks</h2>
+{% if tasks|length == 0 %}
+<p>No tasks yet, create one</p>
+{% else %}
+<table>
+    <tr>
+        <th>Done</th>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Actions</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>
+            <form action="{{ url_for('toggle', id=task.id) }}" method="POST" style="margin:0;">
+                <input type="hidden" name="source" value="active">
+                <input type="checkbox" name="done" aria-label="done" onclick="this.form.submit();">
+            </form>
+        </td>
+        <td>
+            <a href="{{ url_for('update', id=task.id) }}">{{ task.tittle }}</a>
+        </td>
+        <td><span class="priority-{{ task.priority.lower() }}">{{ task.priority }}</span></td>
+        <td>{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '-' }}</td>
+        <td>
+            <form action="{{ url_for('delete', id=task.id) }}" method="POST" style="margin:0; display:inline;">
+                <button type="submit" class="btn-delete">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<h2>Completed Tasks</h2>
+{% if completed_tasks|length == 0 %}
+<p>No completed tasks yet</p>
+{% else %}
+<table>
+    <tr>
+        <th>Undo</th>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Completed Date</th>
+        <th>Actions</th>
+    </tr>
+    {% for task in completed_tasks %}
+    <tr class="completed">
+        <td>
+            <form action="{{ url_for('toggle', id=task.id) }}" method="POST" style="margin:0;">
+                <input type="hidden" name="source" value="completed">
+                <input type="checkbox" name="done" aria-label="undo" checked onclick="this.form.submit();">
+            </form>
+        </td>
+        <td>{{ task.tittle }}</td>
+        <td><span class="priority-{{ task.priority.lower() }}">{{ task.priority }}</span></td>
+        <td>{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '-' }}</td>
+        <td>{{ task.completed_date.strftime('%Y-%m-%d %H:%M') if task.completed_date else '-' }}</td>
+        <td>
+            <form action="{{ url_for('delete', id=task.id) }}" method="POST" style="margin:0; display:inline;">
+                <button type="submit" class="btn-delete">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

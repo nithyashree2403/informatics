@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+<h2>Create a New Task</h2>
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+<form method="POST">
+    <label>Title*</label><br>
+    <input type="text" name="tittle" required><br><br>
+    <label>Description</label><br>
+    <textarea name="description"></textarea><br><br>
+    <label>Priority</label><br>
+    <select name="priority">
+        <option value="Low">Low</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="High">High</option>
+    </select><br><br>
+    <label>Due Date</label><br>
+    <input type="date" name="due_date"><br><br>
+    <button type="submit">Create Task</button>
+</form>
+{% endblock %}

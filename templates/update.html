@@ -1,0 +1,32 @@
+{%extends "base.html" %}
+
+{% block title %}Update Task{% endblock %}
+
+{% block content %}
+<h2>Update Task</h2>
+{%if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+<form method="POST">
+  <label>Title*</label><br>
+  <input type="text" name="tittle" value="{{ task.tittle }}" required><br><br>
+  <label>Description</label><br>
+  <textarea name="description">{{ task.description }}</textarea><br><br>
+  <label>Priority</label><br>
+  <select name="priority">
+    <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+    <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+    <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+  </select><br><br>
+  <label>Due Date</label><br>
+  <input type="date" name="due_date" value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}"><br><br>
+  <label>
+    <input type="checkbox" name="done" {% if task.done %}checked{% endif %}>
+    Mark as done
+  </label><br><br>
+  <button type="submit">Save </button>
+</form>
+<form method="POST" action="{{ url_for('delete', id=task.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this task?');">
+  <button type="submit" style="background-color: #dc3545; color: white;">Delete Task</button>
+</form>
+{% endblock %}

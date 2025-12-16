@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TODO APP{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    </head>
+    <body>
+        <header class="topbar">
+            <h1><a href="{{url_for('index')}}">ToDo App</a></h1>
+            <nav><a href="{{url_for('create')}}" class="btn-add">+ Add Task</a></nav>
+        </header>
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="profile">
+                    <div class="avatar">U</div>
+                    <div>
+                        <div class="username">User</div>
+                        <small>Welcome!</small>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
+                
+                {% set current_filter = request.args.get('filter', '') %}
+                {% set search_query = request.args.get('q', '') %}
+                
+                {% if search_query or current_filter %}
+                <div class="active-filter-indicator">
+                    <strong>Active Filter:</strong>
+                    {% if search_query %}
+                        <span class="filter-badge">🔍 "{{ search_query }}"</span>
+                    {% endif %}
+                    {% if current_filter == 'today' %}
+                        <span class="filter-badge">📅 Today</span>
+                    {% elif current_filter == 'high' %}
+                        <span class="filter-badge filter-badge-high">🔴 High Priority</span>
+                    {% elif current_filter == 'medium' %}
+                        <span class="filter-badge filter-badge-medium">🟡 Medium Priority</span>
+                    {% elif current_filter == 'low' %}
+                        <span class="filter-badge filter-badge-low">🟢 Low Priority</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <form action="{{ url_for('index') }}" method="GET" class="search-form">
+                    <input type="search" name="q" placeholder="Search tasks..." value="{{ search_query }}">
+                    <button type="submit">🔍</button>
+                </form>
+                
+                <div style="margin-top: 16px;">
+                    <form action="{{ url_for('index') }}" method="GET" style="margin-bottom: 8px;">
+                        <button type="submit" name="filter" value="today" class="today-btn {% if current_filter == 'today' %}active-filter-btn{% endif %}" style="width: 100%;">📅 Today's Tasks</button>
+                    </form>
+                </div>
+                
+                <div class="sidebar-list">
+                    <h3 style="font-size: 14px; margin: 16px 0 8px 0; color: #666;">Filter by Priority</h3>
+                    <form class="priority-form">
+                        <button type="submit" name="filter" value="high" class="{% if current_filter == 'high' %}active-filter-btn{% endif %}" style="width: 100%; margin-bottom: 6px; background: #dc3545;">🔴 High</button>
+                        <button type="submit" name="filter" value="medium" class="{% if current_filter == 'medium' %}active-filter-btn{% endif %}" style="width: 100%; margin-bottom: 6px; background: #ffc107; color: #000;">🟡 Medium</button>
+                        <button type="submit" name="filter" value="low" class="{% if current_filter == 'low' %}active-filter-btn{% endif %}" style="width: 100%; background: #28a745;">🟢 Low</button>
+                    </form>
+                    
+                    <div style="margin-top: 12px;">
+                        <a href="{{ url_for('index') }}" style="display: block; text-align: center; padding: 8px; background: #6c757d; color: white; border-radius: 6px; text-decoration: none;">Clear Filters</a>
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </body>
+</html>
