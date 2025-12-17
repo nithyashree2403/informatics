@@ -13,7 +13,7 @@ a{ color: #0b5ed7; }
 .content{ flex:1; }
 .container{ max-width:none; width:100%; margin:0; padding:0 16px; box-sizing:border-box; }
 .profile{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.avatar{ width:48px; height:48px; background:#0b5ed7; color:white; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold; font-size: 20px; }
+/* .avatar{ width:48px; height:48px; background:#0b5ed7; color:white; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold; font-size: 20px; } */
 .username{ font-weight:bold; font-size: 16px; }
 .sidebar-list ul{ list-style:none; padding:0; margin:12px 0 0 0; }
 .sidebar-list li{ margin:8px 0; }
