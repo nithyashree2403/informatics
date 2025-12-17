@@ -4,15 +4,16 @@ body { margin: 0; }
 a{ color: #0b5ed7; }
 
 /* Top navigation bar */
-.topbar{ display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:#f8f9fa; border-bottom:1px solid #e5e5e5; }
-.topbar h1 a { color: #333; text-decoration: none; }
+.topbar{ display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background-image:url('29.png'); background-size:cover; background-position:center; border-bottom:1px solid #e5e5e5; }
+.topbar h1 a { color: #fff; text-decoration: none; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); }
 .btn-add { background: #0b5ed7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; }
 .btn-add:hover { opacity: 0.9; }
 .layout{ display:flex; width:100%; max-width:100%; margin:0; gap:24px; padding:16px; box-sizing:border-box; }
-.sidebar{ width:280px; background:#fff; border:1px solid #eee; padding:16px; border-radius:8px; height:fit-content; position: sticky; top: 16px; }
+.sidebar{ width:280px; background:#f5f5f5; border:1px solid #eee; padding:16px; border-radius:8px; height:fit-content; position: sticky; top: 16px; }
 .content{ flex:1; }
 .container{ max-width:none; width:100%; margin:0; padding:0 16px; box-sizing:border-box; }
 .profile{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.profile small{ font-weight:bold; color:#333; font-size: 18px; }
 /* .avatar{ width:48px; height:48px; background:#0b5ed7; color:white; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold; font-size: 20px; } */
 .username{ font-weight:bold; font-size: 16px; }
 .sidebar-list ul{ list-style:none; padding:0; margin:12px 0 0 0; }
@@ -64,14 +65,14 @@ a{ color: #0b5ed7; }
     margin: 2px;
 }
 .filter-badge-high {
-    background: #dc3545;
+    background: #f8b3bb;
 }
 .filter-badge-medium {
-    background: #ffc107;
+    background: #ffe69c;
     color: #000;
 }
 .filter-badge-low {
-    background: #28a745;
+    background: #a3d9a5;
 }
 
 /* General styles */
@@ -305,14 +306,14 @@ tr.completed td {
 .btn-delete {
     background: #dc3545;
     color: white;
-    padding: 10px 20px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 4px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s;
-    width: 100%;
+    width: auto;
 }
 
 .btn-delete:hover {

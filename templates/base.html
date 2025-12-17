@@ -81,9 +81,9 @@
                         <input type="hidden" name="today" value="true">
                         {% endif %}
                         {% if priority_active != 'high' %}
-                        <button type="submit" name="priority" value="high" style="width: 100%; background: #dc3545; padding: 8px 12px; border-radius: 6px;">🔴 High</button>
+                        <button type="submit" name="priority" value="high" style="width: 100%; background: #ef8995; padding: 8px 12px; border-radius: 6px;">🔴 High</button>
                         {% else %}
-                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #dc3545; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🔴 High</a>
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #ef8995; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🔴 High</a>
                         {% endif %}
                     </form>
                     
@@ -96,9 +96,9 @@
                         <input type="hidden" name="today" value="true">
                         {% endif %}
                         {% if priority_active != 'medium' %}
-                        <button type="submit" name="priority" value="medium" style="width: 100%; background: #ffc107; color: #000; padding: 8px 12px; border-radius: 6px;">🟡 Medium</button>
+                        <button type="submit" name="priority" value="medium" style="width: 100%; background: #ffd97d; color: #000; padding: 8px 12px; border-radius: 6px;">🟡 Medium</button>
                         {% else %}
-                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #ffc107; color: #000; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; box-sizing: border-box;">🟡 Medium</a>
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #ffd97d; color: #000; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; box-sizing: border-box;">🟡 Medium</a>
                         {% endif %}
                     </form>
                     
@@ -111,9 +111,9 @@
                         <input type="hidden" name="today" value="true">
                         {% endif %}
                         {% if priority_active != 'low' %}
-                        <button type="submit" name="priority" value="low" style="width: 100%; background: #28a745; padding: 8px 12px; border-radius: 6px;">🟢 Low</button>
+                        <button type="submit" name="priority" value="low" style="width: 100%; background: #8cc98e; padding: 8px 12px; border-radius: 6px;">🟢 Low</button>
                         {% else %}
-                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #28a745; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🟢 Low</a>
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #8cc98e; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🟢 Low</a>
                         {% endif %}
                     </form>
                     
@@ -124,12 +124,7 @@
                 
                 <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
                 
-                <div class="sidebar-list">
-                    <h3 style="font-size: 14px; margin: 16px 0 8px 0; color: #666;">⚙️ Settings</h3>
-                    <ul>
-                        <li><a href="{{ url_for('privacy_policy') }}">📄 Terms and Conditions</a></li>
-                    </ul>
-                </div>
+                
             </aside>
             
             <main class="content">

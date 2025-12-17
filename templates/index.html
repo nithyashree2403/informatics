@@ -62,7 +62,7 @@
         <td>{{ task.tittle }}</td>
         <td><span class="priority-{{ task.priority.lower() }}">{{ task.priority }}</span></td>
         <td>{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '-' }}</td>
-        <td>{{ task.completed_date.strftime('%Y-%m-%d %H:%M') if task.completed_date else '-' }}</td>
+        <td>{{ task.completed_date.strftime('%Y-%m-%d') if task.completed_date else '-' }}</td>
         <td>
             <form action="{{ url_for('delete', id=task.id) }}" method="POST" style="margin:0; display:inline;">
                 <button type="submit" class="btn-delete">Delete</button>

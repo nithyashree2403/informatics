@@ -1,6 +1,5 @@
-import os
-import json
-from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response, session
+
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 
@@ -8,28 +7,12 @@ from datetime import datetime, date
 # I learned that instance folder is better for storing database files
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key = 'my-secret-key-2025'  # needed this for session management
-os.makedirs(app.instance_path, exist_ok=True)
 
-# Database setup - using SQLite because it's simple and works well for this project
-db_path = os.path.join(app.instance_path, 'todo.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # this removes warning messages
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
+
 db = SQLAlchemy(app)
 
-
-# User model - added for GDPR compliance requirements
-# This stores user consent preferences as per GDPR Article 7
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), nullable=False, default='User')
-    email = db.Column(db.String(120), nullable=True)
-    # Different types of consent - learned that GDPR requires granular consent options
-    consent_given = db.Column(db.Boolean, default=False, nullable=False)
-    consent_date = db.Column(db.DateTime, nullable=True)
-    data_sharing_consent = db.Column(db.Boolean, default=False, nullable=False)
-    analytics_consent = db.Column(db.Boolean, default=False, nullable=False)
-    created_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    last_data_export = db.Column(db.DateTime, nullable=True)
 
 # Main Task model - stores active tasks
 class Task(db.Model):
@@ -52,15 +35,6 @@ class CompletedTask(db.Model):
     due_date = db.Column(db.Date, nullable=True)
     priority = db.Column(db.String(20), default='Medium', nullable=False)
     completed_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-
-# Audit log for GDPR compliance - tracks all data operations
-# Required for GDPR Article 15 (Right to access)
-class DataAccessLog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    action = db.Column(db.String(100), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    ip_address = db.Column(db.String(50), nullable=True)
-    details = db.Column(db.Text, nullable=True)
 
 
 with app.app_context():
@@ -255,174 +229,6 @@ def delete(id):
     db.session.delete(ctask)
     db.session.commit()
     return redirect('/')
-
-
-## GDPR Compliance Routes ##
-# Added these to meet Part 2 requirements
-
-# Privacy policy page - GDPR Article 13 requires informing users about data processing
-@app.route('/gdpr/privacy-policy')
-def privacy_policy():
-    return render_template('privacy_policy.html')
-
-# Consent management - allows users to control their data preferences
-# This is required by GDPR Article 7
-@app.route('/gdpr/consent', methods=['GET', 'POST'])
-def gdpr_consent():
-    # Get or create user record
-    user = User.query.first()
-    if not user:
-        user = User(username='User')
-        db.session.add(user)
-        db.session.commit()
-    
-    if request.method == 'POST':
-        # Update consent preferences from form
-        user.consent_given = request.form.get('consent_given') == 'on'
-        user.data_sharing_consent = request.form.get('data_sharing') == 'on'
-        user.analytics_consent = request.form.get('analytics') == 'on'
-        user.consent_date = datetime.utcnow()
-        db.session.commit()
-        
-        # Log this action for audit trail (GDPR requirement)
-        log = DataAccessLog(
-            action='consent_updated',
-            ip_address=request.remote_addr,
-            details=f'Consents: General={user.consent_given}, Sharing={user.data_sharing_consent}, Analytics={user.analytics_consent}'
-        )
-        db.session.add(log)
-        db.session.commit()
-        
-        return redirect(url_for('index'))
-    
-    # Show consent form
-    return render_template('gdpr_consent.html', user=user)
-
-
-# Data export - lets users download all their data
-# This satisfies GDPR Article 15 (right of access) and Article 20 (data portability)
-@app.route('/gdpr/export-data')
-def export_data():
-    user = User.query.first()
-    if not user:
-        user = User(username='User')
-        db.session.add(user)
-        db.session.commit()
-    
-    # Gather all user data from database
-    tasks = Task.query.all()
-    completed_tasks = CompletedTask.query.all()
-    
-    # Build JSON structure with all user data
-    data = {
-        'user_information': {
-            'username': user.username,
-            'email': user.email,
-            'consent_given': user.consent_given,
-            'data_sharing_consent': user.data_sharing_consent,
-            'analytics_consent': user.analytics_consent,
-            'consent_date': user.consent_date.isoformat() if user.consent_date else None,
-            'account_created': user.created_date.isoformat()
-        },
-        'active_tasks': [
-            {
-                'id': t.id,
-                'title': t.tittle,
-                'description': t.description,
-                'priority': t.priority,
-                'due_date': t.due_date.isoformat() if t.due_date else None,
-                'created_date': t.created_date.isoformat()
-            } for t in tasks
-        ],
-        'completed_tasks': [
-            {
-                'id': t.id,
-                'title': t.tittle,
-                'description': t.description,
-                'priority': t.priority,
-                'due_date': t.due_date.isoformat() if t.due_date else None,
-                'created_date': t.created_date.isoformat(),
-                'completed_date': t.completed_date.isoformat()
-            } for t in completed_tasks
-        ],
-        'export_date': datetime.utcnow().isoformat(),
-        'data_protection_notice': 'This data is provided under GDPR Article 15 (Right of Access) and Article 20 (Right to Data Portability)'
-    }
-    
-    # Track when user last exported data
-    user.last_data_export = datetime.utcnow()
-    db.session.commit()
-    
-    # Add to audit log
-    log = DataAccessLog(
-        action='data_export',
-        ip_address=request.remote_addr,
-        details=f'Exported {len(tasks)} active tasks and {len(completed_tasks)} completed tasks'
-    )
-    db.session.add(log)
-    db.session.commit()
-    
-    # Return as downloadable JSON file
-    response = make_response(json.dumps(data, indent=2))
-    response.headers['Content-Disposition'] = f'attachment; filename=my_todo_data_{datetime.utcnow().strftime("%Y%m%d_%H%M%S")}.json'
-    response.headers['Content-Type'] = 'application/json'
-    return response
-
-
-# Right to be forgotten - deletes all user data
-# GDPR Article 17 requires this functionality
-@app.route('/gdpr/delete-all-data', methods=['POST'])
-def delete_all_data():
-    # Delete everything from both task tables
-    Task.query.delete()
-    CompletedTask.query.delete()
-    
-    # Log this action before clearing data
-    log = DataAccessLog(
-        action='data_deletion_all',
-        ip_address=request.remote_addr,
-        details='User exercised right to erasure - all data deleted'
-    )
-    db.session.add(log)
-    db.session.commit()
-    
-    # Reset user settings but keep the account record for compliance
-    user = User.query.first()
-    if user:
-        user.consent_given = False
-        user.data_sharing_consent = False
-        user.analytics_consent = False
-        user.email = None  # remove personal info
-        db.session.commit()
-    
-    return redirect(url_for('index'))
-
-
-# Show audit log of all data operations
-@app.route('/gdpr/access-log')
-def access_log():
-    # Get last 50 log entries, newest first
-    logs = DataAccessLog.query.order_by(DataAccessLog.timestamp.desc()).limit(50).all()
-    return render_template('access_log.html', logs=logs)
-
-# Data retention policy page
-# Shows users what data we have and how long we keep it
-@app.route('/gdpr/data-retention')
-def data_retention():
-    user = User.query.first()
-    tasks = Task.query.all()
-    completed_tasks = CompletedTask.query.all()
-    
-    # Find oldest tasks to show data age
-    oldest_task = Task.query.order_by(Task.created_date).first()
-    oldest_completed = CompletedTask.query.order_by(CompletedTask.created_date).first()
-    
-    return render_template('data_retention.html', 
-                         user=user,
-                         total_tasks=len(tasks),
-                         total_completed=len(completed_tasks),
-                         oldest_task=oldest_task,
-                         oldest_completed=oldest_completed)
 
 
 if __name__ == '__main__':
