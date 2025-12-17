@@ -25,22 +25,24 @@
                 
                 <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
                 
-                {% set current_filter = request.args.get('filter', '') %}
+                {% set today_active = request.args.get('today', '') %}
+                {% set priority_active = request.args.get('priority', '') %}
                 {% set search_query = request.args.get('q', '') %}
                 
-                {% if search_query or current_filter %}
+                {% if search_query or today_active or priority_active %}
                 <div class="active-filter-indicator">
-                    <strong>Active Filter:</strong>
+                    <strong>Active Filters:</strong>
                     {% if search_query %}
                         <span class="filter-badge">🔍 "{{ search_query }}"</span>
                     {% endif %}
-                    {% if current_filter == 'today' %}
+                    {% if today_active == 'true' %}
                         <span class="filter-badge">📅 Today</span>
-                    {% elif current_filter == 'high' %}
+                    {% endif %}
+                    {% if priority_active == 'high' %}
                         <span class="filter-badge filter-badge-high">🔴 High Priority</span>
-                    {% elif current_filter == 'medium' %}
+                    {% elif priority_active == 'medium' %}
                         <span class="filter-badge filter-badge-medium">🟡 Medium Priority</span>
-                    {% elif current_filter == 'low' %}
+                    {% elif priority_active == 'low' %}
                         <span class="filter-badge filter-badge-low">🟢 Low Priority</span>
                     {% endif %}
                 </div>
@@ -53,21 +55,80 @@
                 
                 <div style="margin-top: 16px;">
                     <form action="{{ url_for('index') }}" method="GET" style="margin-bottom: 8px;">
-                        <button type="submit" name="filter" value="today" class="today-btn {% if current_filter == 'today' %}active-filter-btn{% endif %}" style="width: 100%;">📅 Today's Tasks</button>
+                        {% if search_query %}
+                        <input type="hidden" name="q" value="{{ search_query }}">
+                        {% endif %}
+                        {% if priority_active %}
+                        <input type="hidden" name="priority" value="{{ priority_active }}">
+                        {% endif %}
+                        {% if today_active != 'true' %}
+                        <button type="submit" name="today" value="true" class="today-btn" style="width: 100%; padding: 8px 12px; border-radius: 6px;">📅 Today's Tasks</button>
+                        {% else %}
+                        <a href="{{ url_for('index', q=search_query, priority=priority_active) }}" class="today-btn active-filter-btn" style="width: 100%; display: block; text-align: center; text-decoration: none; padding: 8px 12px; border-radius: 6px; box-sizing: border-box;">📅 Today's Tasks</a>
+                        {% endif %}
                     </form>
                 </div>
                 
                 <div class="sidebar-list">
                     <h3 style="font-size: 14px; margin: 16px 0 8px 0; color: #666;">Filter by Priority</h3>
+                    
+                    <!-- High Priority -->
+                    <form class="priority-form" style="margin-bottom: 6px;">
+                        {% if search_query %}
+                        <input type="hidden" name="q" value="{{ search_query }}">
+                        {% endif %}
+                        {% if today_active == 'true' %}
+                        <input type="hidden" name="today" value="true">
+                        {% endif %}
+                        {% if priority_active != 'high' %}
+                        <button type="submit" name="priority" value="high" style="width: 100%; background: #dc3545; padding: 8px 12px; border-radius: 6px;">🔴 High</button>
+                        {% else %}
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #dc3545; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🔴 High</a>
+                        {% endif %}
+                    </form>
+                    
+                    <!-- Medium Priority -->
+                    <form class="priority-form" style="margin-bottom: 6px;">
+                        {% if search_query %}
+                        <input type="hidden" name="q" value="{{ search_query }}">
+                        {% endif %}
+                        {% if today_active == 'true' %}
+                        <input type="hidden" name="today" value="true">
+                        {% endif %}
+                        {% if priority_active != 'medium' %}
+                        <button type="submit" name="priority" value="medium" style="width: 100%; background: #ffc107; color: #000; padding: 8px 12px; border-radius: 6px;">🟡 Medium</button>
+                        {% else %}
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #ffc107; color: #000; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; box-sizing: border-box;">🟡 Medium</a>
+                        {% endif %}
+                    </form>
+                    
+                    <!-- Low Priority -->
                     <form class="priority-form">
-                        <button type="submit" name="filter" value="high" class="{% if current_filter == 'high' %}active-filter-btn{% endif %}" style="width: 100%; margin-bottom: 6px; background: #dc3545;">🔴 High</button>
-                        <button type="submit" name="filter" value="medium" class="{% if current_filter == 'medium' %}active-filter-btn{% endif %}" style="width: 100%; margin-bottom: 6px; background: #ffc107; color: #000;">🟡 Medium</button>
-                        <button type="submit" name="filter" value="low" class="{% if current_filter == 'low' %}active-filter-btn{% endif %}" style="width: 100%; background: #28a745;">🟢 Low</button>
+                        {% if search_query %}
+                        <input type="hidden" name="q" value="{{ search_query }}">
+                        {% endif %}
+                        {% if today_active == 'true' %}
+                        <input type="hidden" name="today" value="true">
+                        {% endif %}
+                        {% if priority_active != 'low' %}
+                        <button type="submit" name="priority" value="low" style="width: 100%; background: #28a745; padding: 8px 12px; border-radius: 6px;">🟢 Low</button>
+                        {% else %}
+                        <a href="{{ url_for('index', q=search_query, today=today_active if today_active == 'true' else None) }}" class="active-filter-btn" style="width: 100%; background: #28a745; display: block; text-align: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: white; box-sizing: border-box;">🟢 Low</a>
+                        {% endif %}
                     </form>
                     
                     <div style="margin-top: 12px;">
                         <a href="{{ url_for('index') }}" style="display: block; text-align: center; padding: 8px; background: #6c757d; color: white; border-radius: 6px; text-decoration: none;">Clear Filters</a>
                     </div>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
+                
+                <div class="sidebar-list">
+                    <h3 style="font-size: 14px; margin: 16px 0 8px 0; color: #666;">⚙️ Settings</h3>
+                    <ul>
+                        <li><a href="{{ url_for('privacy_policy') }}">📄 Terms and Conditions</a></li>
+                    </ul>
                 </div>
             </aside>
             

@@ -2,23 +2,51 @@
 {% block title %}Create Task{% endblock %}
 
 {% block content %}
-<h2>Create a New Task</h2>
-{% if error %}
-<p class="error">{{ error }}</p>
-{% endif %}
-<form method="POST">
-    <label>Title*</label><br>
-    <input type="text" name="tittle" required><br><br>
-    <label>Description</label><br>
-    <textarea name="description"></textarea><br><br>
-    <label>Priority</label><br>
-    <select name="priority">
-        <option value="Low">Low</option>
-        <option value="Medium" selected>Medium</option>
-        <option value="High">High</option>
-    </select><br><br>
-    <label>Due Date</label><br>
-    <input type="date" name="due_date"><br><br>
-    <button type="submit">Create Task</button>
-</form>
+<div class="update-container">
+  <div class="update-header">
+    <h2>✨ Create New Task</h2>
+    <p class="subtitle">Add a new task to your todo list</p>
+  </div>
+  
+  {% if error %}
+  <div class="error-message">{{ error }}</div>
+  {% endif %}
+  
+  <form method="POST" class="update-form">
+    <div class="form-group">
+      <label for="tittle">Task Title *</label>
+      <input type="text" id="tittle" name="tittle" required placeholder="Enter task title (e.g., Complete project report)">
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" placeholder="Add details about your task... (optional)"></textarea>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="priority">Priority Level</label>
+        <select id="priority" name="priority">
+          <option value="Low">🟢 Low Priority</option>
+          <option value="Medium" selected>🟡 Medium Priority</option>
+          <option value="High">🔴 High Priority</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="due_date">Due Date</label>
+        <input type="date" id="due_date" name="due_date">
+      </div>
+    </div>
+    
+    <div class="form-tip">
+      <strong>💡 Quick Tip:</strong> Set a due date to stay on track and prioritize your tasks effectively!
+    </div>
+    
+    <div class="button-group">
+      <button type="submit" class="btn-save">➕ Create Task</button>
+      <a href="{{ url_for('index') }}" class="btn-cancel">Cancel</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Terms and Conditions{% endblock %}
+
+{% block content %}
+<div class="gdpr-container">
+    <h2>📄 Terms and Conditions</h2>
+    
+    <div class="gdpr-section">
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing and using this ToDo application, you accept and agree to be bound by the terms and conditions outlined here.</p>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>2. Use of Service</h3>
+        <ul>
+            <li>This application is provided for personal task management purposes</li>
+            <li>You are responsible for maintaining the confidentiality of your tasks</li>
+            <li>You agree not to misuse the service or help anyone else do so</li>
+        </ul>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>3. Data Storage</h3>
+        <ul>
+            <li>Your tasks are stored locally in the application database</li>
+            <li>We collect task information including titles, descriptions, priorities, and due dates</li>
+            <li>Data is retained until you choose to delete it</li>
+        </ul>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>4. User Responsibilities</h3>
+        <ul>
+            <li>Maintain accurate and up-to-date task information</li>
+            <li>Use the service in a lawful manner</li>
+            <li>Keep your data secure and protected</li>
+            <li>Report any issues or bugs to improve the service</li>
+        </ul>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>5. Service Availability</h3>
+        <p>While we strive to keep the service available at all times, we do not guarantee uninterrupted access. The service is provided "as is" without warranties of any kind.</p>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>6. Privacy</h3>
+        <ul>
+            <li>Your privacy is important to us</li>
+            <li>We do not share your data with third parties</li>
+            <li>You can delete your data at any time</li>
+            <li>Data is stored securely in our database</li>
+        </ul>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>7. Changes to Terms</h3>
+        <p>We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.</p>
+    </div>
+    
+    <div class="gdpr-section">
+        <h3>8. Contact Information</h3>
+        <p>If you have any questions about these terms, please contact us at: <strong>support@todoapp.example.com</strong></p>
+    </div>
+    
+    <div class="gdpr-actions">
+        <a href="{{ url_for('index') }}" class="btn-cancel">Back to Tasks</a>
+    </div>
+    
+    <p class="gdpr-footer">Last Updated: December 17, 2025</p>
+</div>
+{% endblock %}
